@@ -5,13 +5,19 @@ services:
     plan: free
     healthCheckPath: /health
     envVars:
-      - key: GEMINI_API_KEY
+      - key: GROQ_API_KEY
         sync: false
-      - key: GEMINI_MODEL
-        value: gemini-1.5-flash
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
       - key: MONGO_URI
         sync: false
       - key: CLOUDINARY_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
         sync: false
       - key: SECRET_KEY
         generateValue: true
