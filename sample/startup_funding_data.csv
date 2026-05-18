@@ -1,0 +1,21 @@
+startup,startup_domain,city,funding_million_usd,employees,revenue_million_usd,burn_rate_million_usd,founding_year,customer_satisfaction,growth_percent,monthly_active_users
+NovaAI,Artificial Intelligence,Bangalore,25,120,8.5,1.2,2021,4.6,180,250000
+FinEdge,FinTech,Mumbai,40,200,15.0,2.5,2019,4.3,140,500000
+HealthSync,HealthTech,Delhi,18,95,6.2,0.9,2022,4.7,210,180000
+EduSpark,EdTech,Pune,12,80,4.1,0.7,2020,4.2,125,150000
+GreenGrid,CleanTech,Hyderabad,30,160,10.8,1.8,2018,4.5,135,320000
+QuickCart,E-Commerce,Bangalore,50,300,22.5,4.0,2017,4.1,95,900000
+CyberShield,Cybersecurity,Delhi,28,140,11.7,1.5,2021,4.8,175,280000
+MediVision,HealthTech,Mumbai,22,110,7.9,1.1,2020,4.4,160,230000
+AutoFlow,Automation,Pune,35,175,13.4,2.0,2019,4.5,145,340000
+SkyNetix,Artificial Intelligence,Hyderabad,60,350,30.2,5.5,2016,4.9,240,1200000
+FarmWise,AgriTech,Delhi,10,70,3.5,0.5,2022,4.3,110,90000
+LearnLoop,EdTech,Bangalore,16,90,5.0,0.8,2021,4.0,130,170000
+PaySphere,FinTech,Hyderabad,45,240,18.7,3.2,2018,4.6,170,650000
+SafeNet,Cybersecurity,Mumbai,32,150,12.1,1.9,2019,4.7,185,310000
+EcoDrive,CleanTech,Pune,20,100,7.0,1.0,2021,4.4,150,200000
+VisionX,Artificial Intelligence,Delhi,55,320,26.4,4.8,2017,4.8,220,980000
+MediCare+,HealthTech,Bangalore,24,130,9.2,1.4,2020,4.5,165,260000
+TradePilot,FinTech,Pune,38,210,16.0,2.6,2018,4.2,155,540000
+RoboWorks,Automation,Mumbai,27,145,10.5,1.6,2019,4.6,172,295000
+ShopNest,E-Commerce,Hyderabad,48,290,21.0,3.9,2017,4.1,102,850000

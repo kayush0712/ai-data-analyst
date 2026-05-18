@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Data Analyst</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    />
+</head>
+<body>
+
+    <div class="app">
+
+        <div class="sidebar">
+
+            <div class="logo">
+                AI Analyst
+            </div>
+
+            <div class="upload-box">
+
+                <label class="upload-label">
+                    Upload CSV
+                </label>
+
+                <input type="file" id="csvFile" />
+
+                <button onclick="uploadCSV()">
+                    Upload
+                </button>
+
+                <p id="uploadStatus"></p>
+
+            </div>
+
+            <div class="datasets-box">
+                <label class="upload-label">
+                    Your datasets
+                </label>
+                <p class="hint">
+                    Click a file to switch which table
+                    questions apply to.
+                </p>
+                <div id="datasetList"></div>
+            </div>
+
+        </div>
+
+        <div class="chat-container">
+
+            <div class="chat-header">
+                AI Data Analyst Agent
+            </div>
+
+            <div class="messages" id="messages">
+                <div class="bot-message">
+                    Upload a CSV and ask anything.
+                    You can upload multiple files and
+                    switch between them in the sidebar.
+                </div>
+            </div>
+
+            <div class="input-area">
+                <textarea
+                    id="question"
+                    placeholder="Ask about your dataset..."
+                ></textarea>
+
+                <button onclick="runAgent()">
+                    Send
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}?v=5"></script>
+
+</body>
+</html>

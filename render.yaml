@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: ai-data-analyst
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash
+      - key: MONGO_URI
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MPLCONFIGDIR
+        value: /tmp/matplotlib
+      - key: TABLE_DISPLAY_LIMIT
+        value: "100"
