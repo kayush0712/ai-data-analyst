@@ -1,4 +1,5 @@
 import json
+import os
 import re
 
 from agent.llm_client import chat
@@ -45,7 +46,7 @@ ADD_WORDS = (
 CHART_WORDS = (
     "chart", "graph", "plot", "visualize",
     "visualise", "visualization", "visualisation",
-    "diagram",
+    "diagram", "show",
 )
 
 SYSTEM_PROMPT = """
@@ -82,6 +83,19 @@ RULES:
 """
 
 
+def _is_valid_chart_path(path) -> bool:
+    """
+    Return True only if path is a real generated chart file path.
+    Rejects None, empty strings, error messages, or anything that
+    doesn't look like a generated_charts/*.png path.
+    """
+    if not path or not isinstance(path, str):
+        return False
+    # Must start with the charts directory and end with .png
+    normalized = path.replace("\\", "/")
+    return normalized.startswith("generated_charts/") and normalized.endswith(".png")
+
+
 def try_direct_clean(question, df):
     question_lower = question.lower()
 
@@ -112,16 +126,10 @@ def try_direct_chart(question, df):
 
     question_lower = question.lower()
 
-    if not any(
-        word in question_lower
-        for word in CHART_WORDS
-    ):
+    if not any(word in question_lower for word in CHART_WORDS):
         return None
 
-    if any(
-        word in question_lower
-        for word in UPDATE_WORDS
-    ) and (
+    if any(word in question_lower for word in UPDATE_WORDS) and (
         parse_experience_value(question_lower)
         or parse_salary_value(question_lower)
     ):
@@ -130,26 +138,25 @@ def try_direct_chart(question, df):
     from helpers.chart_helper import parse_chart_columns
 
     prepared = prepare_dataframe(df)
-    _, y_col = parse_chart_columns(prepared, question)
 
-    path = generate_chart(
-        prepared,
-        question=question,
-    )
+    path = generate_chart(prepared, question=question)
 
-    if not path:
+    # Strictly validate the returned path — generate_chart (or tool_registry)
+    # may return an error string instead of None on failure; catch both cases.
+    if not _is_valid_chart_path(path):
         return {
             "answer": (
                 "Could not create a chart. "
-                "Check the column name exists and "
-                "has numeric values."
+                "Please check the column name exists "
+                "and has numeric values."
             ),
             "outputs": {},
             "dataframe": prepared,
         }
 
-    chart_url = "/" + path.replace("\\", "/")
+    _, y_col = parse_chart_columns(prepared, question)
     column_label = y_col or "your data"
+    chart_url = "/" + path.replace("\\", "/")
 
     return {
         "answer": f"Here is a chart of {column_label}.",
@@ -164,10 +171,7 @@ def try_direct_chart(question, df):
 def try_direct_update(question, df):
     question_lower = question.lower()
 
-    if not any(
-        word in question_lower
-        for word in UPDATE_WORDS
-    ):
+    if not any(word in question_lower for word in UPDATE_WORDS):
         return None
 
     if not (
@@ -177,10 +181,7 @@ def try_direct_update(question, df):
     ):
         return None
 
-    updated, err = update_rows(
-        df,
-        question=question,
-    )
+    updated, err = update_rows(df, question=question)
 
     if err:
         return {
@@ -190,9 +191,7 @@ def try_direct_update(question, df):
         }
 
     return {
-        "answer": (
-            "Employee record updated successfully."
-        ),
+        "answer": "Employee record updated successfully.",
         "outputs": {"row_update": "success"},
         "dataframe": updated,
     }
@@ -201,24 +200,15 @@ def try_direct_update(question, df):
 def try_direct_delete(question, df):
     question_lower = question.lower()
 
-    if not any(
-        word in question_lower
-        for word in DELETE_WORDS
-    ):
+    if not any(word in question_lower for word in DELETE_WORDS):
         return None
 
-    filters, err = build_delete_from_question(
-        df,
-        question,
-    )
+    filters, err = build_delete_from_question(df, question)
 
     if not filters:
         return None
 
-    updated, msg = delete_rows(
-        df,
-        filters=filters,
-    )
+    updated, msg = delete_rows(df, filters=filters)
 
     return {
         "answer": msg or "Rows deleted successfully.",
@@ -230,22 +220,13 @@ def try_direct_delete(question, df):
 def try_direct_add(question, df):
     question_lower = question.lower()
 
-    if not any(
-        word in question_lower
-        for word in ADD_WORDS
-    ):
+    if not any(word in question_lower for word in ADD_WORDS):
         return None
 
-    if any(
-        word in question_lower
-        for word in CHART_WORDS + DELETE_WORDS
-    ):
+    if any(word in question_lower for word in CHART_WORDS + DELETE_WORDS):
         return None
 
-    row, err = build_add_row_from_question(
-        df,
-        question,
-    )
+    row, err = build_add_row_from_question(df, question)
 
     if err:
         return {
@@ -284,15 +265,10 @@ def extract_json(text):
 
 
 def run_agent(question, uploaded_df):
-    current_df = prepare_dataframe(
-        uploaded_df.copy()
-    )
+    current_df = prepare_dataframe(uploaded_df.copy())
     outputs = {}
 
-    multi = run_multi_step(
-        question,
-        current_df,
-    )
+    multi = run_multi_step(question, current_df)
 
     if multi is not None:
         return multi
@@ -344,10 +320,7 @@ def run_agent(question, uploaded_df):
 
         if action == "final":
             return {
-                "answer": parsed.get(
-                    "answer",
-                    "Task completed.",
-                ),
+                "answer": parsed.get("answer", "Task completed."),
                 "outputs": outputs,
                 "dataframe": current_df,
             }
