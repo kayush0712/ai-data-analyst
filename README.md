@@ -30,7 +30,7 @@ The agent automatically picks the right chart type based on your question — no
 
 
 ### Scatter Plot — Experience vs Salary
-> `experience vs salary`
+> `salary by peformance_score`
 
 Automatically detects both axes are numeric and renders a scatter plot with a trend line.
 
